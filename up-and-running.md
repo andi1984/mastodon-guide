@@ -6,7 +6,7 @@ This guide assumes you have:
 2. A domain name (preferably a wacky TLD) pointed towards the IP address of the machine
 3. Some patience... please work all the way through to the "Troubleshooting" section before calling it a day 😃
 
-These instructions have been tested and verified with the standard Ubuntu 16.04 x64 image on both a $10/mo [Vultr](https://vultr.com) instance and a $20/mo [DigitalOcean](https://digitalocean.com) instance. 2GB memory is recommended. You'll also find things faster if you can select the region nearest you geographically. 
+These instructions have been tested and verified with the standard Ubuntu 16.04 x64 image on a $10/mo [Vultr](https://vultr.com) instance, a $20/mo [DigitalOcean](https://digitalocean.com) instance, and a $5/mo [Linode](https://linode.com) instance. 2GB memory is recommended, but 1GB will work for small instances. You'll also find things faster if you can select the region nearest you geographically. 
 
 ## Step 1. Create a `mastodon` user with root privileges
 
@@ -66,9 +66,9 @@ Exit the SSH session and then log back in before moving to the next step.
 
 ## Install Docker Compose
 
-Check the latest release number [here](https://github.com/docker/compose/releases) and run the following command, swapping out the release number ("1.12.0" below): 
+Check the latest release number [here](https://github.com/docker/compose/releases) and run the following command, swapping out the release number ("1.18.0" below): 
 
-`sudo curl -o /usr/local/bin/docker-compose -L "https://github.com/docker/compose/releases/download/1.12.0/docker-compose-$(uname -s)-$(uname -m)"`
+`sudo curl -o /usr/local/bin/docker-compose -L "https://github.com/docker/compose/releases/download/1.18.0/docker-compose-$(uname -s)-$(uname -m)"`
 
 Set the necessary permissions:
 
@@ -166,9 +166,9 @@ Now let's configure nginx:
 
 `sudo nano /etc/nginx/sites-available/mastodon`
 
-Copy the nginx config from [here](https://github.com/tootsuite/mastodon/blob/master/docs/Running-Mastodon/Production-guide.md) and paste it into the `nano` editor window. 
+Copy the nginx config from [here](https://github.com/tootsuite/documentation/blob/master/Running-Mastodon/Production-guide.md#mastodon-application-configuration) and paste it into the `nano` editor window. 
 
-Find all intances of `example.com` and replace with the domain name you have pointed to your machine, *including* the `ssl_certificate` lines. These are the only changes you should make.
+Find all intances of `example.com` and replace with the domain name you have pointed to your machine. These are the only changes you should make.
 
 Once done, press ^X, type `Y` and hit Enter to save your changes.
 
@@ -195,6 +195,17 @@ Then simply run the following command replacing `example.com` with the domain yo
 
 Follow the prompts to complete the process. 
 
+## Create temporary swap file (optional)
+
+If you're using a machine with a small amount of RAM (like a 1GB VPS), you will probably need to create a temporary swap file in order to complete the following steps:
+
+```
+sudo fallocate -l 1G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+```
+
 ## Run Mastodon
 
 We've made a lot of progress, let's get everything running. First, make sure you're in the Mastodon install directory:
@@ -216,6 +227,8 @@ Lastly, let's bring nginx back online:
 `sudo systemctl restart nginx.service`
 
 You should be able to visit your domain now, be auto-directed to the HTTPS protocol and see your running Mastodon instance!
+
+**NOTE**: If you created a temporary swap file, you can now delete it by running `sudo swapoff /swapfile` and `sudo rm -rf /swapfile`.
 
 ## Setup cron jobs
 
@@ -272,7 +285,7 @@ The output produced by the command will be piped to a log file located at /home/
 
 ## Next Steps: Managing your instance
 
-Information on managing your instance can be found [here](https://github.com/tootsuite/mastodon/blob/master/docs/Running-Mastodon/Administration-guide.md) on the Mastodon repository itself. Before you start editing site settings etc. however, you need to make yourself an admin. 
+Information on managing your instance can be found [here](https://github.com/tootsuite/documentation/blob/master/Running-Mastodon/Administration-guide.md) on the Mastodon repository itself. Before you start editing site settings etc. however, you need to make yourself an admin. 
 
 ### Granting admin permissions
 
@@ -291,6 +304,10 @@ Logout and log back in again, then visit your.domain/admin/settings to start cus
 - [Converting your instance to single user mode](https://github.com/ummjackson/mastodon-guide/blob/master/single-user-mode.md)
 
 ## Troubleshooting
+
+### Webpacker compliation error
+
+If you're getting an error during the compilation process (like `The code generator has deoptimised the styling of "/mastodon/node_modules/emoji-mart/dist-es/data/data.js" as it exceeds the max of "500KB"`), you need more RAM. This can be solved by following the steps in the "Create temporary swap file" section.
 
 ### The site loads but looks funky / doesn't respond properly
 
