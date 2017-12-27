@@ -309,6 +309,12 @@ Logout and log back in again, then visit your.domain/admin/settings to start cus
 
 If you're getting an error during the compilation process (like `The code generator has deoptimised the styling of "/mastodon/node_modules/emoji-mart/dist-es/data/data.js" as it exceeds the max of "500KB"`), you need more RAM. This can be solved by following the steps in the "Create temporary swap file" section.
 
+## Error uploading profile picture/background/other images
+
+If you see an error message when you try to upload a profile picture, profile background, or other images, you may need to update permissions for the public/system folder. Make sure you are logged into the `mastodon` user, and run this command:
+
+`sudo chown -R 991:991 /home/mastodon/mastodon/public/system`
+
 ### The site loads but looks funky / doesn't respond properly
 
 If you are seeing server errors or assets not rendering on the frontend, something might just need a gentle push to rebuild and start working. 
