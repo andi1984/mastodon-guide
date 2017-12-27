@@ -78,7 +78,18 @@ Verify it installed by checking the version:
 
 `docker-compose -v`
 
-If you see the version number, we're in business. 
+If you see the version number, we're in business.
+
+## Create temporary swap file (optional)
+
+If you're using a machine with a small amount of RAM (like a 1GB VPS), you will probably need to create a temporary swap file in order to complete the  rest of the guide. These commands will create a 1GB swap file:
+
+```
+sudo fallocate -l 1G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+```
 
 ## Install Mastodon
 
@@ -183,7 +194,7 @@ sudo apt-get update
 
 Now we can install Certbot:
 
-`sudo apt-get install certbot`
+`sudo apt-get install python-certbot-nginx`
 
 Once installed, we can generate the SSL certificates. First you'll need to stop your nginx server so that Certbot can run its standalone authenticator:
 
@@ -191,20 +202,9 @@ Once installed, we can generate the SSL certificates. First you'll need to stop 
 
 Then simply run the following command replacing `example.com` with the domain you have pointed at your machine:
 
-`sudo letsencrypt certonly --standalone -d example.com`
+`sudo certbot --nginx -d example.com`
 
 Follow the prompts to complete the process. 
-
-## Create temporary swap file (optional)
-
-If you're using a machine with a small amount of RAM (like a 1GB VPS), you will probably need to create a temporary swap file in order to complete the following steps:
-
-```
-sudo fallocate -l 1G /swapfile
-sudo chmod 600 /swapfile
-sudo mkswap /swapfile
-sudo swapon /swapfile
-```
 
 ## Run Mastodon
 
