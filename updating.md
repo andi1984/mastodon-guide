@@ -2,9 +2,15 @@
 
 **Note**: This guide assumes you created your Mastodon instance using the instructions from this documentation. If you set up your instance using a different guide, some steps could be different.
 
-## Optional: Announce the update
+## Announce the update (optional)
 
-If you're running an instance that other people use, it's a good idea to let people know when you are planning to update. That way, they'll know the downtime is intentional, and not something they should be worried about.
+If you're running an instance that other people use, you should let people know when you are planning to update. That way, they'll know the downtime is intentional, and not something they should be worried about. Ideally, you should announce the downtime several hours in advance, so everyone has time to see the message.
+
+## Make a backup (optional)
+
+It's a good idea to make a backup before updating, in case something goes wrong. General information about backing up Mastodon instances can be found [on the official documentation](https://github.com/tootsuite/documentation/blob/master/Maintaining-Mastodon/Backups-Guide.md).
+
+If you're running your instance on a VPS, your VPS provider may offer backup services. For example, Linode offers automatic and manual backups for a few dollars extra per month (more info [here](https://www.linode.com/backups)).
 
 ## Stopping the instance
 
@@ -71,7 +77,7 @@ sudo swapon /swapfile
 
 Now we're ready to compile Mastodon. First, you should check [the latest release documentation](https://github.com/tootsuite/mastodon/releases/), since there might be special steps you need to do. You only need to follow the directions that apply to Docker.
 
-*Note:* Some of the following steps may not be necessary for every release, but it doesn't hurt to run them all. Since this is a general guide for every update, that's what we'll do.
+**Note:** Some of the following steps may not be necessary for every release, but it doesn't hurt to run them all. Since this is a general guide for every update, that's what we'll do.
 
 Run each of these commands, one after the other:
 
