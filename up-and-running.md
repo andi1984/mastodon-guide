@@ -247,6 +247,7 @@ Copy/paste in everything below:
 ```
 cd /home/mastodon/mastodon
 docker-compose run --rm web rake mastodon:media:clear
+docker-compose run --rm web rake mastodon:media:remove_remote
 docker-compose run --rm web rake mastodon:push:refresh
 docker-compose run --rm web rake mastodon:push:clear
 docker-compose run --rm web rake mastodon:feeds:clear
@@ -309,7 +310,19 @@ Logout and log back in again, then visit your.domain/admin/settings to start cus
 
 If you're getting an error during the compilation process (like `The code generator has deoptimised the styling of "/mastodon/node_modules/emoji-mart/dist-es/data/data.js" as it exceeds the max of "500KB"`), you need more RAM. This can be solved by following the steps in the "Create temporary swap file" section.
 
-## Error uploading profile picture/background/other images
+### Running out of space
+
+If your server is running out of space, it's possible the cron job designed to clean up temporary files is not running. Run this command to see the entire cron file for `root`:
+
+`sudo crontab -l`
+
+This line should be somewhere in the file (if not, add it):
+
+`0 0 * * * /home/mastodon/mastodon_cron > /home/mastodon/mastodon_log`
+
+To clear up files manually, you can just run `/home/mastodon/mastodon_cron` at any time.
+
+### Error uploading profile picture/background/other images
 
 If you see an error message when you try to upload a profile picture, profile background, or other images, you may need to update permissions for the public/system folder. Make sure you are logged into the `mastodon` user, and run this command:
 
