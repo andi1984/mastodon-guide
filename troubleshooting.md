@@ -61,3 +61,33 @@ docker-compose stop
 docker-compose build
 docker-compose up -d
 ```
+
+## 502 Bad Gateway
+
+If you see a 502 error on your instance, it probably means the Ruby server for Mastodon hasn't started properly. Restarting the Docker container usually fixes it. Log into the `mastodon` user, and run these commands:
+
+```
+cd /home/mastodon/mastodon
+docker-compose down
+docker-compse up -d
+```
+
+Wait a few minutes for the changes to take effect. If you're still having issues, run `docker-compose` without the `-d` part, so you'll see all log messages as the Docker runs. If you need to exit, press CTRL-C and then restart the container with the normal `docker-compose up -d` command.
+
+### A server is already running
+
+You might see the following message in the Docker log:
+
+```
+web_1 | A server is already running. Check /mastodon/tmp/pids/server.pid.
+```
+
+You might see this if you restart the server after it was improperly shut down, or if you restore from a backup. Basically, Ruby thinks the server is already running because it found a process ID in the /tmp folder.
+
+To fix this problem, start the Mastodon Docker container using `docker-compse up -d` (if you haven't already), then run this command:
+
+```
+docker exec -it mastodon_web_1 rm /mastodon/tmp/pids/server.pid
+```
+
+This will delete the `server.pid` file in the web Docker container, allowing the server to once again start.
