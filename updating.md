@@ -34,19 +34,34 @@ docker-compose stop
 
 ## Updating the local files
 
-Next, we need to download the new version of Mastodon, using Git. First, make sure you're on the `master` branch:
+Next, we need to download the new version of Mastodon, using Git. First, update the list of tags in git:
 
 ```
-git status
+git fetch --tags
 ```
 
-You should see a message like `On branch master`. Now, we need to update our local files to match the master branch:
+You should see a list of releases, like this:
 
 ```
-git pull origin master
+v2.3.1
+v2.3.1rc1
+v2.3.1rc2
+v2.3.1rc3
+v2.3.2
+v2.3.2rc1
+v2.3.2rc2
+v2.3.2rc3
+v2.3.2rc4
+v2.3.2rc5
 ```
 
-Now you've finished downloading the latest version of Mastodon! It's time to compile it.
+You need to switch your local copy to the latest release (ignore the RC versions). For example, if v2.3.2 is the latest version, you would run this:
+
+```
+git checkout tags/v2.3.2
+```
+
+
 
 ## Create temporary swap file (optional)
 
