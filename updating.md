@@ -20,7 +20,7 @@ Before we update, it's important to shut everything down, to prevent possible da
 cd ~/mastodon
 ```
 
-Next, shut down the ngix server:
+Next, shut down the nginx server:
 
 ```
 sudo systemctl stop nginx.service
