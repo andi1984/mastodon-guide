@@ -179,7 +179,7 @@ Now let's configure nginx:
 
 Copy the nginx config from [here](https://github.com/tootsuite/documentation/blob/master/Running-Mastodon/Production-guide.md#mastodon-application-configuration) and paste it into the `nano` editor window. 
 
-Find all intances of `example.com` and replace with the domain name you have pointed to your machine. These are the only changes you should make.
+Find all intances of `example.com` and replace with the domain name you have pointed to your machine and replace "live" by "mastodon" as we cloned Mastodon to a "mastodon" folder within "mastodon" user. These are the only changes you should make.
 
 Once done, press ^X, type `Y` and hit Enter to save your changes.
 
@@ -295,7 +295,7 @@ After registering on your newly created instance and confirming your account, yo
 
 Then run this command:
 
-`docker-compose run --rm web rails mastodon:make_admin USERNAME=yourusername`
+`docker-compose run --rm web tootctl accounts modify yourusername --role admin`
 
 Logout and log back in again, then visit your.domain/admin/settings to start customizing your instance.
 
