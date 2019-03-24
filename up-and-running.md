@@ -143,6 +143,10 @@ Now it's time to run migrations:
 
 `docker-compose run --rm web rails db:migrate`
 
+Give the appropriate permissions:
+
+`docker-compose run --rm -u root web chown -R mastodon:mastodon public/assets public/packs public/system`
+
 We can pre-compile assets too to make things snappier:
 
 `docker-compose run --rm web rails assets:precompile`
