@@ -165,7 +165,7 @@ We'll remove the default site profile:
 
 `sudo rm /etc/nginx/sites-available/default`
 
-...and it's symbolic link:
+...and its symbolic link:
 
 `sudo rm /etc/nginx/sites-enabled/default`
 
