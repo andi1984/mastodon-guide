@@ -38,7 +38,7 @@ Now let's install Docker. Add the GPG key for the official Docker repository to 
 
 Add the Docker repository to APT sources:
 
-`sudo apt-add-repository 'deb https://apt.dockerproject.org/repo ubuntu-xenial main'`
+`sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"'`
 
 Update the package database with the Docker packages from the newly added repo:
 
@@ -50,7 +50,7 @@ Tell the system to install from the Docker repo instead of the default Ubuntu 16
 
 Finally, install Docker:
 
-`sudo apt-get install -y docker-engine`
+`sudo apt-get install docker-ce`
 
 Docker should now be installed, the daemon started, and the process enabled to start on boot. Check that it's running:
 
@@ -295,7 +295,7 @@ After registering on your newly created instance and confirming your account, yo
 
 Then run this command:
 
-`docker-compose run --rm web rails mastodon:make_admin USERNAME=yourusername`
+`docker-compose run --rm web bin/tootctl accounts modify <yourusername> --role admin`
 
 Logout and log back in again, then visit your.domain/admin/settings to start customizing your instance.
 
