@@ -38,7 +38,7 @@ Now let's install Docker. Add the GPG key for the official Docker repository to 
 
 Add the Docker repository to APT sources:
 
-`sudo apt-add-repository 'deb https://apt.dockerproject.org/repo ubuntu-xenial main'`
+`sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"'`
 
 Update the package database with the Docker packages from the newly added repo:
 
@@ -50,7 +50,7 @@ Tell the system to install from the Docker repo instead of the default Ubuntu 16
 
 Finally, install Docker:
 
-`sudo apt-get install -y docker-engine`
+`sudo apt-get install docker-ce`
 
 Docker should now be installed, the daemon started, and the process enabled to start on boot. Check that it's running:
 
@@ -143,6 +143,10 @@ Now it's time to run migrations:
 
 `docker-compose run --rm web rails db:migrate`
 
+Give the appropriate permissions:
+
+`docker-compose run --rm -u root web chown -R mastodon:mastodon public/assets public/packs public/system`
+
 We can pre-compile assets too to make things snappier:
 
 `docker-compose run --rm web rails assets:precompile`
@@ -161,7 +165,7 @@ We'll remove the default site profile:
 
 `sudo rm /etc/nginx/sites-available/default`
 
-...and it's symbolic link:
+...and its symbolic link:
 
 `sudo rm /etc/nginx/sites-enabled/default`
 
@@ -247,6 +251,7 @@ Copy/paste in everything below:
 ```
 cd /home/mastodon/mastodon
 docker-compose run --rm web rake mastodon:media:clear
+docker-compose run --rm web rake mastodon:media:remove_remote
 docker-compose run --rm web rake mastodon:push:refresh
 docker-compose run --rm web rake mastodon:push:clear
 docker-compose run --rm web rake mastodon:feeds:clear
@@ -295,60 +300,10 @@ After registering on your newly created instance and confirming your account, yo
 
 Then run this command:
 
-`docker-compose run --rm web tootctl accounts modify yourusername --role admin`
+`docker-compose run --rm web bin/tootctl accounts modify <yourusername> --role admin`
 
 Logout and log back in again, then visit your.domain/admin/settings to start customizing your instance.
 
-### Other guides
-
-- [Converting your instance to single user mode](https://github.com/ummjackson/mastodon-guide/blob/master/single-user-mode.md)
-
 ## Troubleshooting
 
-### Webpacker compliation error
-
-If you're getting an error during the compilation process (like `The code generator has deoptimised the styling of "/mastodon/node_modules/emoji-mart/dist-es/data/data.js" as it exceeds the max of "500KB"`), you need more RAM. This can be solved by following the steps in the "Create temporary swap file" section.
-
-## Error uploading profile picture/background/other images
-
-If you see an error message when you try to upload a profile picture, profile background, or other images, you may need to update permissions for the public/system folder. Make sure you are logged into the `mastodon` user, and run this command:
-
-`sudo chown -R 991:991 /home/mastodon/mastodon/public/system`
-
-### The site loads but looks funky / doesn't respond properly
-
-If you are seeing server errors or assets not rendering on the frontend, something might just need a gentle push to rebuild and start working. 
-
-A good first step is to run this block of commands **one line at a time** from your `/home/mastodon/mastodon` directory, making sure none of them fail - then check https://your.domain again to see if things are working.
-
-```
-docker-compose down
-docker-compose build
-docker-compose run --rm web rails assets:precompile
-docker-compose run --rm web rails db:migrate
-docker-compose up -d
-sudo systemctl restart nginx.service
-```
-
-**Note:** `docker-compose down` will remove all containers, meaning it will clear out the database. If you'd like to avoid potential data loss, substitute it with `docker-compose stop`. This is less of an issue for a fresh install, but you'll want to switch to the latter once you have registered users.
-
-### Email confirmation isn't working
-
-#### Is your host blacklisted?
-
-Some mail hosts will blacklist or bounce emails coming from newly created email addresses or domains. Thankfully Mailgun will try sending these messages again and it should eventually get through.
-
-If you are not receiving emails and need to confirm a user account, go to the "Logs" tab inside the Mailgun UI and click your domain. You should see a green row with the verification email that it attempted to send. Click the cog icon to the left of the row and then "View Message", from here you can manually copy/paste the confirmation URL into your browser to get around this problem.
-
-After your instance is live for ~24 hours, you shouldn't be having this issue any longer. 
-
-#### Is your SMTP sending port blocked?
-
-Some ISPs and hosts such as Scaleway block email sending on the standard SMTP port, `25`. To see if that's happening view the web container's logs using `docker logs mastodon_web_1` and look for connection timeouts. To correct this edit the `.env.production` configuration file and change `SMTP_PORT: 25` to port `2525`, which Mailgun and SparkPost support.
-
-After doing so you'll need to rebuild the containers:
-```
-docker-compose stop
-docker-compose build
-docker-compose up -d
-```
+If you have any problems during (or after setup), please see the [Troubleshooting page](https://github.com/ummjackson/mastodon-guide/blob/master/troubleshooting.md).
